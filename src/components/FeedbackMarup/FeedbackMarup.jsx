@@ -1,56 +1,52 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import { Statistics } from '../Statistics/Statistics';
 import { FeedbackOptions } from '../FeedbackOptions/FeedbackOptions';
 import { Section } from '../Section/Section';
-import { Notificftion } from "components/Notification/Notification";
+import { Notificftion } from 'components/Notification/Notification';
 
-export class FeedbackMarup extends Component {
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
+export function FeedbackMarup() {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+  const parameters = [{ value:good, parameter: "good", func: setGood },
+    { value:neutral, parameter: "neutral", func: setNeutral },
+    { value:bad, parameter: "bad", func: setBad }];
+  const handleForButton = (option) => {    
+     option.func(option.value + 1)
   };
-  handleForButton = e => {
-    const name = e.target.name;
-    this.setState(prevState => {
-      return { [name]: prevState[name] + 1 };
-    });
-  };
-  countTotalFeedback() {
-    const { good, neutral, bad } = this.state;
+  const countTotalFeedback = () => {
     return good + neutral + bad;
-  }
-  countPositiveFeedbackPercentage() {
-    const { good } = this.state;
-    return Math.round((good / this.countTotalFeedback()) * 100);
-  }
-  render() {
-    const { good, neutral, bad } = this.state;
-    const param = Object.keys(this.state);    
-    return (
-      <>
-        <Section
-          title="Please leave feedback"
-          children={
-            <FeedbackOptions
-              options={param}
-              onLeaveFeedback={this.handleForButton}
-            />
-          }
-        />
-        <Section
-          title="Statistics"
-          children={good||neutral||bad?
+  };
+  const countPositiveFeedbackPercentage = () => {
+    return Math.round((good / countTotalFeedback()) * 100);
+  };
+  return (
+    <>
+      <Section
+        title="Please leave feedback"
+        children={
+          <FeedbackOptions
+            options={parameters}
+            onLeaveFeedback={handleForButton}
+          />
+        }
+      />
+      <Section
+        title="Statistics"
+        children={
+          good || neutral || bad ? (
             <Statistics
               good={good}
               neutral={neutral}
               bad={bad}
-              total={this.countTotalFeedback()}
-              positivePercentage={this.countPositiveFeedbackPercentage()}
-            />:<Notificftion message="There is no feedback"/>
-          }
-        />
-      </>
-    );
-  }
+              total={countTotalFeedback()}
+              positivePercentage={countPositiveFeedbackPercentage()}
+            />
+          ) : (
+            <Notificftion message="There is no feedback" />
+          )
+        }
+      />
+    </>
+  );
 }
