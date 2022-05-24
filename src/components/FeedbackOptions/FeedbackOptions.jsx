@@ -3,19 +3,13 @@ import s from "../FeedbackOptions/FeedbackOptions.module.css"
 export function FeedbackOptions({ options, onLeaveFeedback }) {
       return (
         <>
-          {options.map(({value,parameter,func}) => (
-           <button className={s.button} key={parameter}  type="button" onClick={()=>{onLeaveFeedback({value,parameter,func})}}>{parameter}</button>
+          {options.map(option => (
+           <button className={s.button} key={option} name={option} type="button" onClick={onLeaveFeedback}>{option}</button>
          ))}
         </> 
     )
 };
 FeedbackOptions.propTypes = {
-  options: PropTypes.arrayOf(
-    PropTypes.shape({
-      parameter:PropTypes.string.isRequired,
-      value: PropTypes.number.isRequired,
-      func:PropTypes.func.isRequired
-    })
-  ),
+  options: PropTypes.arrayOf(PropTypes.string),
   onLeaveFeedback:PropTypes.func.isRequired
 }
